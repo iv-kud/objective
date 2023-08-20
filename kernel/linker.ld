@@ -4,10 +4,14 @@ SECTIONS
 {
     . = 1M;
 
+    .multiboot :
+    {
+        *(.multiboot)
+    }
     .text BLOCK(4K) : ALIGN(4K)
     {
-        *.(.multiboot)
         *(.text)
+        *(.eh_frame)
     }
 
     .rodata BLOCK(4K) : ALIGN(4k)

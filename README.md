@@ -18,6 +18,7 @@ sudo apt -y install build-essential binutils nasm xorriso grub-common qemu-syste
 ```sh
 # Build and create iso image
 make install  
+# Run emulator
 make run
 ```
 
@@ -31,6 +32,7 @@ make run
 -   [Multiboot specification][6]
 -   [GCC compiler documentation][7]
 -   [Using NASM in a Hello World kernel][8]
+-   [Addres of video memory][9]
 
 [1]:https://habr.com/ru/companies/neobit/articles/173263/
 [2]:https://www.gnu.org/software/grub/manual/grub/grub.pdf
@@ -40,3 +42,4 @@ make run
 [6]:https://www.gnu.org/software/grub/manual/multiboot/multiboot.pdf
 [7]:https://gcc.gnu.org/onlinedocs/gcc.pdf
 [8]:https://wiki.osdev.org/Bare_Bones_with_NASM
+[9]:https://stackoverflow.com/questions/17367618/address-of-video-memory

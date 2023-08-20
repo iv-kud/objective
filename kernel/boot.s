@@ -1,6 +1,4 @@
-MBALIGN equ 1 << 0
-MEMINFO equ 1 << 1
-MBFLAGS equ MBALIGN | MEMINFO
+MBFLAGS equ 0
 MAGIC equ 0x1BADB002
 CHECKSUM equ -(MAGIC + MBFLAGS)
 
@@ -17,10 +15,10 @@ resb 16384
 stack_top:
 
 section .text
+extern main
 global _start:function (_start.end - _start)
 _start:
             mov esp, stack_top
-            extern main
             call main
             cli
 .hang:      hlt
