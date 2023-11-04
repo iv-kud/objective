@@ -11,15 +11,21 @@ sudo apt update -y
 sudo apt -y install build-essential binutils nasm xorriso grub-common qemu-system-i386 mtools
 ```
 
+Need build GCC cross compiler for i686 architecture to compile project sources.
+Refer to GCC documentation for detailed information - <https://gcc.gnu.org/install/>
+
 ## Build and run
 
 #### Ubuntu
 
+Build and run release version
 ```sh
-# Build and create iso image
-make install  
-# Run emulator
-make run
+make all
+```
+
+Build and run debug version
+```sh
+make DEBUG=true all
 ```
 
 ## Docs

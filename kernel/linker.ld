@@ -12,6 +12,7 @@ SECTIONS
     {
         *(.text)
         *(.eh_frame)
+        *(.ctors)
     }
 
     .rodata BLOCK(4K) : ALIGN(4k)

@@ -1,22 +1,13 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "GlobalConstruct.h"
 #include "../arch/x86/io/GlobalObj.h"
 #include "../arch/x86/inc/TypeConverter.h"
 
 void main()
 {
-    VGADisplay d;
-    IntConverter conv;
+    GlobalConstruct::terminalInit();
+    GlobalConstruct::gdtInit();
 
-    unsigned int i = 124;
+    display << "Hello, World!";
 
-    d << conv.intToChar(i);
-    d << "Hello, world!\tHello, world!";
-    for(int i = 0; i < 10; i++)d << "\tHello!";
 };
 
-#ifdef __cplusplus
-};
-#endif

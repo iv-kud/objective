@@ -1,3 +1,5 @@
+#define NULL 0
+
 
 typedef unsigned char uint8;
 typedef unsigned int uint16;
