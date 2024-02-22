@@ -47,6 +47,7 @@ startbuild:
 
 install:
 	@echo "Creating an iso image of OS"
+	mkdir -p ./iso/os/
 	cp ./$(BDIR)/kernel.bin ./iso/os/
 	grub-mkrescue -o ./$(BDIR)/kernel.iso ./iso
 
