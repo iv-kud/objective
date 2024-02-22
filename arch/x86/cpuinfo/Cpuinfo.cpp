@@ -1,5 +1,4 @@
 #include "Cpuinfo.h"
-#include "../../../kernel/GlobalConstruct.h"
 
 
 inline Cpuinfo::cpuidFunctionIndex operator++(Cpuinfo::cpuidFunctionIndex& command)
