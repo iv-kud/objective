@@ -1,13 +1,12 @@
 #include "GlobalConstruct.h"
-#include "../arch/x86/io/GlobalObj.h"
-#include "../arch/x86/inc/TypeConverter.h"
+#include <TypeConverter.h>
+#include <types.h>
+
+#include "../arch/x86/cpuinfo/Cpuinfo.h"
 
 void main()
 {
     GlobalConstruct::terminalInit();
     GlobalConstruct::gdtInit();
-
-    display << "Hello, World!";
-
+    Cpuinfo cpuinf;
 };
-

@@ -2,9 +2,9 @@ CC = i686-elf-g++
 LD = ld
 ASM = nasm
 # test -O2 flag
-CFLAGS = -c -m32 -Wall -ffreestanding -nostdinc -nostdlib -lgcc
+CFLAGS = -c -m32 -Wall -ffreestanding -nostdinc -nostdlib
 AFLAGS = -f elf32
-LDFLAGS = -m elf_i386
+LDFLAGS = -m elf_i386 -L$(GCC_PATH) -lgcc
 QEMUFLAGS =
 
 CFILES = $(shell find ./ -type f \( -name \*.cpp -o -name \*.c \))
@@ -12,6 +12,7 @@ AFILES = $(shell find ./ -type f \( -iname \*.s -o -name \*.asm \))
 LDFILE = $(shell find ./ -type f -name *.ld)
 SOURCE_FILES = $(CFILES) $(AFILES)
 OBJ_FILES = $(addprefix $(BDIR)/, $(addsuffix .o, $(basename $(SOURCE_FILES))))
+INCLUDE = ./include
 
 ifeq ($(DEBUG), true)
 	CFLAGS := -g3 $(CFLAGS)
@@ -28,12 +29,12 @@ build: startbuild $(SOURCE_FILES)
 	echo $(AFLAGS)
 	echo $(CFLAGS)
 	@echo "Link object files..."
-	$(LD) $(LDFLAGS) -o $(OS_BINARY) -T $(LDFILE) $(OBJ_FILES)
+	$(LD) -o $(OS_BINARY) -T $(LDFILE) $(OBJ_FILES) $(LDFLAGS) 
 	@echo "Project was built"
 
 $(CFILES):
 	mkdir -p $(BDIR)/$(@D)
-	$(CC) $(CFLAGS) -o $(BDIR)/$(addsuffix .o, $(basename $@)) $@
+	$(CC) $(CFLAGS) -I $(INCLUDE) -o $(BDIR)/$(addsuffix .o, $(basename $@)) $@
 
 $(AFILES):
 	mkdir -p $(BDIR)/$(@D)
@@ -54,6 +55,6 @@ clean:
 	rm -rf ./iso/os/kernel.bin
 
 run:
-	 qemu-system-i386 $(QEMUFLAGS) -cdrom ./$(BDIR)/kernel.iso
+	 qemu-system-x86_64 $(QEMUFLAGS) -cdrom ./$(BDIR)/kernel.iso
 
 all: clean build install run

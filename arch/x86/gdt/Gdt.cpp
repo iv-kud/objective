@@ -57,7 +57,7 @@ uint64 DescSeg32::flatDataUser()
 
 MngGdt::MngGdt()
 {
-    this->gdt[0] = 0;
+    gdt[0] = 0;
     currIdx = 1;
     isGdtLoaded = 0;
 };
@@ -82,7 +82,7 @@ bool MngGdt::loadGdt()
 
     uint64 pointer = 0;
     uint16 size = sizeof(uint64) * this->size - 1;
-    uint16 offset = (uint32)((void *)(&gdt));
+    uint32 offset = (uint32)((void *)(&gdt));
 
     pointer |= offset;
     pointer <<= 16;
@@ -97,4 +97,17 @@ bool MngGdt::loadGdt()
 bool MngGdt::getIsGdtLoaded()
 {
     return isGdtLoaded;
+};
+
+void MngGdt::operator=(const MngGdt& src)
+{
+    if(this->isGdtLoaded == 1 || src.isGdtLoaded == 1)
+    {
+        return;
+    }
+
+    // Fix it. Write method to copy from ... to ...
+    for(int i = 0; i < this->size; i++) this->gdt[i] = src.gdt[i];
+    this->isGdtLoaded = src.isGdtLoaded;
+    this->currIdx = src.currIdx;
 };

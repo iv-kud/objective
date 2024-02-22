@@ -2,6 +2,7 @@
 #define VGAGRAPHICS_H
 
 #include "VGADisplayInfo.h"
+#include <TypeConverter.h>
 
 typedef unsigned short dchar;
 
@@ -27,6 +28,8 @@ class VGADisplay
         VGADisplay(uint16 x, uint16 y);
         VGADisplay& operator<<(const char &c);
         VGADisplay& operator<<(const char *c);
+        VGADisplay& operator<<(const uint32 number);
+        VGADisplay& operator<<(const uint64 number);
         VGADisplay& operator++(int);
         void setShift(bool status);
         void setColor(char colorAttr);

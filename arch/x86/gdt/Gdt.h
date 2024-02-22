@@ -1,7 +1,7 @@
 #ifndef GDT_H
 #define GDT_H
 
-#include "../inc/types.h"
+#include <types.h>
 
 
 // Define access options
@@ -54,7 +54,7 @@ class DescSeg32                     // Segment descriptor
         static uint64 flatDataKernel();
         static uint64 flatCodeUser();
         static uint64 flatDataUser();
-} __attribute__((packed));
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,6 +74,7 @@ class MngGdt
 
     public:
        MngGdt();
+       void operator=(const MngGdt& src);
        bool addDescriptor(uint64 desc);  // 0 - not set descriptor, 1 - set
        bool loadGdt();      // 0 - if GDT is not loaded, 1 - loaded
        bool getIsGdtLoaded();

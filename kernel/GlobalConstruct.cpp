@@ -7,7 +7,8 @@ void GlobalConstruct::terminalInit()
 
 void GlobalConstruct::gdtInit()
 {
-    mngGdtInit();
+    mngGdt = MngGdt();
+
     mngGdt.addDescriptor(DescSeg32::flatCodeKernel());
     mngGdt.addDescriptor(DescSeg32::flatDataKernel()); 
     mngGdt.loadGdt();
