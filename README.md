@@ -1,7 +1,5 @@
 ## Object Operating System
 
-----
-
 ## Install dependencies
 
 #### Ubuntu
@@ -15,6 +13,14 @@ Need build GCC cross compiler for i686 architecture to compile project sources.
 Refer to GCC documentation for detailed information - <https://gcc.gnu.org/install/>
 
 ## Build and run
+
+Before build the project set some variables - DEBUG and GCC_PATH.  
+These variables may pass through *make* command `make *variables* *rule*`, or usage environment variables `export *name*=*value*`.
+
+#### Variables
+
+1. DEBUG. Takes a boolean value (true or false). Responsible for the debug version of the project to test it via DGB.
+2. GCC_PATH. Takes the path to the GCC library of the cross-compiler you built earlier.
 
 #### Ubuntu
 
