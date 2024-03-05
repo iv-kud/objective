@@ -59,7 +59,7 @@ class DescSeg32                     // Segment descriptor
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void GOTOGDTMEMSEG(uint64 pointer);
+extern void SWITCHTOGDT(uint64 pointer);
 #ifdef __cplusplus
 };
 #endif

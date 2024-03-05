@@ -3,3 +3,7 @@ build
 
 # Operarting system's files needed to boot
 iso/os/*
+
+# LSP configuration files
+.clangd
+compile_flags.txt

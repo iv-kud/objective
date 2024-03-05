@@ -88,7 +88,7 @@ bool MngGdt::loadGdt()
     pointer <<= 16;
     pointer |= size;
 
-    GOTOGDTMEMSEG(pointer);
+    SWITCHTOGDT(pointer);
 
     isGdtLoaded = 1;
     return true;
