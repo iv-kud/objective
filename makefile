@@ -4,7 +4,7 @@ ASM = nasm
 # test -O2 flag
 CFLAGS = -c -m32 -Wall -ffreestanding -nostdinc -nostdlib
 AFLAGS = -f elf32
-LDFLAGS = -m elf_i386 -L$(GCC_PATH) -lgcc
+LDFLAGS = -m elf_i386 $(patsubst %,-L%,$(subst :, ,$(LIBS_PATH))) -lgcc -lstdc++
 QEMUFLAGS =
 
 CFILES = $(shell find ./ -type f \( -name \*.cpp -o -name \*.c \))

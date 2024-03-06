@@ -1,6 +1,8 @@
 #include "Gdt.h"
 
 
+uint64 MngGdt::gdt[MngGdt::size];
+
 DescSeg32::DescSeg32(uint32 base, uint32 limit, uint8 access, uint8 flags)
 {
     this->baseLow = base & 0x0000FFFF;

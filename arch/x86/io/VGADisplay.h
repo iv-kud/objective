@@ -36,4 +36,12 @@ class VGADisplay
         void setBlink(bool blinkAttr);
         void setBright(bool brigthAttr);
 };
+
+// Global variables
+
+namespace out
+{
+    extern VGADisplay display;
+};
+
 #endif
