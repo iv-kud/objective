@@ -1,5 +1,7 @@
 #include "VGADisplay.h"
 
+VGADisplay out::display;
+
 VGADisplay::VGADisplay()
 {
     isBright = isBlink = shift = 0;

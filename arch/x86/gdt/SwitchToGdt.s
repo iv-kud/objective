@@ -1,5 +1,5 @@
-global GOTOGDTMEMSEG
-GOTOGDTMEMSEG:
+global SWITCHTOGDT
+SWITCHTOGDT:
         lgdt [esp + 4]
         jmp 0x08:.reloadCS
 .reloadCS:
