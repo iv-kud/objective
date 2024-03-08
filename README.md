@@ -9,18 +9,19 @@ sudo apt update -y
 sudo apt -y install build-essential binutils nasm xorriso grub-common qemu-system-i386 mtools
 ```
 
-Need build GCC cross compiler for i686 architecture to compile project sources.
+You need to build GCC cross compiler for i686 or x86_64 supports x32 architecture/s to compile from sources.
+Also required gcc and stdc++ libraries.
 Refer to GCC documentation for detailed information - <https://gcc.gnu.org/install/>
 
 ## Build and run
 
-Before build the project set some variables - DEBUG and GCC_PATH.  
+Before build the project set some variables - DEBUG and LIBS_PATH.  
 These variables may pass through *make* command `make *variables* *rule*`, or usage environment variables `export *name*=*value*`.
 
 #### Variables
 
-1. DEBUG. Takes a boolean value (true or false). Responsible for the debug version of the project to test it via DGB.
-2. GCC_PATH. Takes the path to the GCC library of the cross-compiler you built earlier.
+1. DEBUG. Takes a boolean value (true or false). Responsible for the debug version of the project to test it via GDB.
+2. LIBS_PATH. Takes the path to the required (gcc and stdc++) libraries.
 
 #### Ubuntu
 
@@ -44,7 +45,7 @@ make DEBUG=true all
 -   [Multiboot specification][6]
 -   [GCC compiler documentation][7]
 -   [Using NASM in a Hello World kernel][8]
--   [Addres of video memory][9]
+-   [Video memory ports x86][9]
 
 [1]:https://habr.com/ru/companies/neobit/articles/173263/
 [2]:https://www.gnu.org/software/grub/manual/grub/grub.pdf
