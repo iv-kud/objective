@@ -1,6 +1,7 @@
 #ifndef CPUID_H
 #define CPUID_H
 #include <types.h>
+#include <MemoryOperations.h>
 
 
 #ifdef __cplusplus
@@ -358,7 +359,7 @@ class Cpuinfo
         uint8 getStepping();
         uint8 getMaxFunctionIndex();
         uint32 getMaxFunctionIndexExtended();
-        uint8* getBrandString();
+        const char* getBrandString();
         uint8* getInternalDescriptors();
 };
 #endif

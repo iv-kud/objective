@@ -1,4 +1,5 @@
 #include "Cpuinfo.h"
+#include "MemoryOperations.h"
 
 
 inline Cpuinfo::cpuidFunctionIndex operator++(Cpuinfo::cpuidFunctionIndex& command)
@@ -52,12 +53,8 @@ Cpuinfo::Cpuinfo()
     currentCpuType = processorType::NotRead;
     serialNumber = 0;
 
-    // Write memset!!!
-    // memset(internalInfoDescriptors, 0, sizeof(uint8) * amountDescriptors)
-    
-    // Rewrite it! Create method memset()
-    for(uint8 i = 0; i < vendorStringSize; i++) vendorString[i] = '\0';
-    for(uint8 i = 0; i < brandStringSize; i++) brandString[i] = '\0';
+    MemoryOperations::set(vendorString, '\0', vendorStringSize);
+    MemoryOperations::set(brandString, '\0', brandStringSize);
 
     dataFilling(Cpuinfo::BasicInfo, Cpuinfo::ExtendedCpuidEnd);
 };
@@ -87,15 +84,7 @@ void Cpuinfo::setBasicData()
         
     uint32 vendorStringInt[3] = {ebx, edx, ecx};
 
-    // Rewrite it! Create method memcpy()
-    for(int i = 0; i < 3; i++)
-    {
-        uint8 upperCharIndex = i * 4 + 3;
-        vendorString[upperCharIndex--] = vendorStringInt[i] >> 24;
-        vendorString[upperCharIndex--] = vendorStringInt[i] >> 16;
-        vendorString[upperCharIndex--] = vendorStringInt[i] >> 8;
-        vendorString[upperCharIndex--] = vendorStringInt[i];
-    }
+    MemoryOperations::copy(vendorStringInt, vendorString, sizeof(uint32) * 3);
 };
 
 void Cpuinfo::setVersionData()
@@ -182,16 +171,7 @@ void Cpuinfo::setBrandString(brandStringPart part)
         uint8 partUint = uint8(part);
         uint32 regs[4] = {eax, ebx, ecx, edx};
 
-        // memCpy()!!!
-        for(uint8 regIndex = 0; regIndex < 4; regIndex++)
-        {
-            uint32 reg = regs[regIndex];
-            for(uint8 bytesInRegister = 0; bytesInRegister < 4; bytesInRegister++)
-            {
-               brandString[partUint++] = reg;
-               reg >>= 8; 
-            }
-        }
+        MemoryOperations::copy(regs, &brandString[partUint], sizeof(uint32) * 4);
     }
 };
 
@@ -355,9 +335,9 @@ uint32 Cpuinfo::getMaxFunctionIndexExtended()
     return maximumInputValueExtended;
 };
 
-uint8* Cpuinfo::getBrandString()
+const char* Cpuinfo::getBrandString()
 {
-    return brandString;
+    return (const char*)brandString;
 };
 
 uint8* Cpuinfo::getInternalDescriptors()
