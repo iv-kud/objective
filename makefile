@@ -56,6 +56,6 @@ clean:
 	rm -rf ./iso/os/kernel.bin
 
 run:
-	 qemu-system-x86_64 $(QEMUFLAGS) -cdrom ./$(BDIR)/kernel.iso
+	qemu-system-i386 $(QEMUFLAGS) -cdrom ./$(BDIR)/kernel.iso
 
 all: clean build install run

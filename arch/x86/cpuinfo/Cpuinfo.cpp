@@ -1,5 +1,4 @@
 #include "Cpuinfo.h"
-#include "MemoryOperations.h"
 
 
 inline Cpuinfo::cpuidFunctionIndex operator++(Cpuinfo::cpuidFunctionIndex& command)
