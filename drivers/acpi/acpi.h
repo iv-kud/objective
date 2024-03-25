@@ -4,98 +4,160 @@
 
 typedef decltype(nullptr) nulltype;
 
-struct descHeader
+class Gas
 {
-    char signature[4];
-    uint32 length;
-    uint8 revision;
-    uint8 checksum;
-    char oemId[6];
-    uint64 oemTableId;
-    uint32 oemRevision;
-    uint32 creatorId;
-    uint32 creatorRevision;
-} __attribute__((packed));
-
-struct rsdt
-{
-    descHeader header;
-    uint32 firstEntryAddr;
-} __attribute__((packed, aligned(sizeof(uint32))));
-
-struct xsdt
-{
-    descHeader header;
-    uint64 firstEntryAddr;
-} __attribute__((packed, aligned(sizeof(uint32))));
-
-struct rsdp
-{
-    char signature[8];
-    uint8 checksum;
-    char oemId[6];
-    uint8 revision;
-    uint32 rsdtAddress;
-    uint32 length;
-    uint32 xsdtAddress;
-    uint8 extendedChecksum;
-    char reserved[3];
-} __attribute__((packed));
-
-class DescriptorTable
-{
-
+    private:
+        const uint8 addressSpaceId;
+        const uint8 registerBitWidth;
+        const uint8 registerBitOffset;
+        const uint8 accessSize;
+        const uint64 address;
+    public:
+        Gas();
+        Gas(const Gas &) = default;
 };
+
+class DescHeader
+{
+    private:
+        const char signature[4];
+        const uint32 length;
+        const uint8 revision;
+        const uint8 checksum;
+        const char oemId[6];
+        const uint64 oemTableId;
+        const uint32 oemRevision;
+        const uint32 creatorId;
+        const uint32 creatorRevision;
+    public:
+        DescHeader() = delete;
+        DescHeader(const DescHeader &) = delete;
+        const uint32 getLength() const;
+        uint8 checksumCheck() const;
+} __attribute__((packed));
+
 
 class Entry
 {
-    private:
-        uint32 sizeHeadersInBytes;
-        const struct descHeader **headers;
-        // DescriptorTable &tables;
+    public:
+        // In bytes
+        static const uint8 size = 4;
+    protected:
+        const DescHeader header;
     public:
         Entry() = delete;
-        Entry(const uint32 sizeEntriesBytes, const uint32 *entryAddress);
-        Entry(const nulltype null);
-};
+        Entry(const Entry &) = delete;
+} __attribute__((packed));
+
+class FadtEntry : public Entry
+{
+    private:
+        const uint32 firmwareCtrl;
+        const uint32 dsdt;
+        const uint8 reserved;
+        const uint8 preferredPmProfile;
+        const uint16 sciInt;
+        const uint32 smiCmd;
+        const uint8 acpiEnable;
+        const uint8 acpiDisable;
+        const uint8 s4biosReq;
+        const uint8 pstateCnt;
+        const uint32 pm1AEvtBlk;
+        const uint32 pm1BEvtBlk;
+        const uint32 pm1ACntBlk;
+        const uint32 pm1BCntBlk;
+        const uint32 pm2CntBlk;
+        const uint32 pmTmrBlk;
+        const uint32 gpe0Blk;
+        const uint32 gpe1Blk;
+        const uint8 pm1EvtLen;
+        const uint8 pm1CntLen;
+        const uint8 pm2CntLen;
+        const uint8 pmTmrLen;
+        const uint8 gpe0BlkLen;
+        const uint8 gpe1BlkLen;
+        const uint8 gpe1Base;
+        const uint8 cstCnt;
+        const uint16 pLvl2Lat;
+        const uint16 pLvl3Lat;
+        const uint16 flushSize;
+        const uint16 flushStride;
+        const uint8 dutyOffset;
+        const uint8 dutyWidth;
+        const uint8 dayAlrm;
+        const uint8 monAlrm;
+        const uint8 century;
+        const uint16 iapcBootArch;
+        const uint8 reservedTwo;
+        const uint32 flags;
+        const Gas resetReg;
+        const uint8 resetValue;
+        const uint16 armBootArch;
+        const uint8 minorRevision;
+        const uint64 xFirmwareCtrl;
+        const uint64 xDsdt;
+        const Gas xPm1AEvtBlk;
+        const Gas xPm1BEvtBlk;
+        const Gas xPm1ACntBlk;
+        const Gas xPm1BCntBlk;
+        const Gas xPm2CntBlk;
+        const Gas xPmTmrBlk;
+        const Gas xGpe0Blk;
+        const Gas xGpe1Blk;
+        const Gas sleepControlReg;
+        const Gas sleepStatusReg;
+        const uint64 hypervisorVendorIdentity;
+    public:
+        FadtEntry() = delete;
+        FadtEntry(const FadtEntry &) = delete;
+} __attribute__((packed));
 
 class Rsdt
 {
     private:
-        const struct rsdt* rsdtStruct;
-        Entry entry;
+        const DescHeader header;
+        const Entry **entries;
     public:
         Rsdt() = delete;
-        Rsdt(const uint32 addr);
-        Rsdt(const nulltype null);
-        const Entry& getEntries();
-};
+        Rsdt(const Rsdt &) = delete;
+        const Entry *getEntry(uint8 index);
+} __attribute__((packed, aligned(sizeof(uint32))));
 
 class Xsdt
 {
     private:
-        const struct xsdt* xsdtStruct;
+        const DescHeader header;
+        const uint64 firstEntryAddr;
     public:
         Xsdt() = delete;
-        Xsdt(const uint32 addr);
-        Xsdt(const nulltype null);
-};
+        Xsdt(const Xsdt &) = delete;
+} __attribute__((packed));
 
 class Rsdp
 {
-    private:
-        const uint8 validFieldRevision = 2;
-        // RSDP memory address areas in IA-PC systems
-        const char *rsdpSign = "RSD PTR ";
-        const MemArea rsdpRomMemArea = MemArea(0xe0000, 0xfffff);
-        const MemArea rsdpEbdaMemArea = MemArea(0x80000, 0x803ff);
-
-        const struct rsdp *rsdpStruct;
-        Rsdt rsdtObj;
-        Xsdt xsdtObj;
     public:
-        Rsdp();
-        const Rsdt *getRsdt() const;
-        const Xsdt *getXsdt() const;
-
+        const static uint8 validFieldRevision;
+        // RSDP memory address areas in IA-PC systems
+        const static char *signatureString;
+        const static memAddr romAreaStart;
+        const static memAddr romAreaEnd;
+        const static memAddr ebdaAreaStart;
+        const static memAddr ebdaAreaEnd;
+   private:
+        const static uint8 checksunFieldSize;
+        const char signature[8];
+        const uint8 checksum;
+        const char oemId[6];
+        const uint8 revision;
+        const uint32 rsdtAddress;
+        const uint32 length;
+        const uint32 xsdtAddress;
+        const uint8 extendedChecksum;
+        const char reserved[3];
+    public:
+        Rsdp() = delete;
+        Rsdp(const Rsdp &) = delete;
+        Rsdt *getRsdt() const;
+        Xsdt *getXsdt() const;
+        uint8 checksumCheck() const;
 };
