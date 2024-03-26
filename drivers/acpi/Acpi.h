@@ -1,5 +1,6 @@
 #include <types.h>
 #include <StringOperations.h>
+#include "Ics.h"
 
 
 typedef decltype(nullptr) nulltype;
@@ -15,7 +16,7 @@ class Gas
     public:
         Gas();
         Gas(const Gas &) = default;
-};
+} __attribute__((packed));
 
 class DescHeader
 {
@@ -41,7 +42,7 @@ class Entry
 {
     public:
         // In bytes
-        static const uint8 size = 4;
+        static const uint8 size;
     protected:
         const DescHeader header;
     public:
@@ -49,7 +50,7 @@ class Entry
         Entry(const Entry &) = delete;
 } __attribute__((packed));
 
-class FadtEntry : public Entry
+class Fadt : public Entry
 {
     private:
         const uint32 firmwareCtrl;
@@ -108,19 +109,33 @@ class FadtEntry : public Entry
         const Gas sleepStatusReg;
         const uint64 hypervisorVendorIdentity;
     public:
-        FadtEntry() = delete;
-        FadtEntry(const FadtEntry &) = delete;
+        Fadt() = delete;
+        Fadt(const Fadt &) = delete;
+} __attribute__((packed));
+
+class Madt : Entry
+{
+    public:
+        const static uint8 sizeWithoutIcs;
+    private:
+        const uint32 localIntControlerAddr;
+        const uint32 flags;
+        const uint8 icsBegin;
+    public:
+        Madt() = delete;
+        Madt(const Madt &) = delete;
+        const Ics *getIcs(uint8 index) const;
 } __attribute__((packed));
 
 class Rsdt
 {
     private:
         const DescHeader header;
-        const Entry **entries;
+        const uint8 entries;
     public:
         Rsdt() = delete;
         Rsdt(const Rsdt &) = delete;
-        const Entry *getEntry(uint8 index);
+        const Entry *getEntry(uint8 index) const;
 } __attribute__((packed, aligned(sizeof(uint32))));
 
 class Xsdt
