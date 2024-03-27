@@ -7,15 +7,15 @@
 class MemArea
 {
     private:
-        memAddr start, final;
+        uintptr start, final;
     public:
         MemArea();
-        MemArea(const memAddr start, const memAddr final);
-        memAddr begin();
-        memAddr end();
+        MemArea(const uintptr start, const uintptr final);
+        uintptr begin();
+        uintptr end();
         bool valid();
 
-        typedef memAddr iterator;
+        typedef uintptr iterator;
 };
 
 class StringOperations

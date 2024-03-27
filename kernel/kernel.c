@@ -2,7 +2,6 @@
 #include "../drivers/acpi/Acpi.h"
 #include <StringOperations.h>
 
-
 void empty() {};
 
 void main()
@@ -27,6 +26,9 @@ void main()
                                madt->getIcs(4),
                                madt->getIcs(5),
                                madt->getIcs(6),
-                               madt->getIcs(7)};
+                               madt->getIcs(7),
+                               madt->getIcs(8)};
+    const IoapicStruct *ioapicStruct = (IoapicStruct *)icsEntry[1];
+    out::display << '\n';
     empty();
 };

@@ -154,10 +154,10 @@ class Rsdp
         const static uint8 validFieldRevision;
         // RSDP memory address areas in IA-PC systems
         const static char *signatureString;
-        const static memAddr romAreaStart;
-        const static memAddr romAreaEnd;
-        const static memAddr ebdaAreaStart;
-        const static memAddr ebdaAreaEnd;
+        const static uintptr romAreaStart;
+        const static uintptr romAreaEnd;
+        const static uintptr ebdaAreaStart;
+        const static uintptr ebdaAreaEnd;
    private:
         const static uint8 checksunFieldSize;
         const char signature[8];

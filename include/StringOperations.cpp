@@ -6,7 +6,7 @@ MemArea::MemArea()
     start = final = NULL;
 };
 
-MemArea::MemArea(const memAddr start, const memAddr final)
+MemArea::MemArea(const uintptr start, const uintptr final)
 {
     this->start = start;
     this->final = final;
@@ -17,12 +17,12 @@ MemArea::MemArea(const memAddr start, const memAddr final)
     }
 };
 
-memAddr MemArea::begin()
+uintptr MemArea::begin()
 {
     return start;
 }
 
-memAddr MemArea::end()
+uintptr MemArea::end()
 {
     if(start == final) return start;
     else return final + 1;

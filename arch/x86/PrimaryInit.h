@@ -2,8 +2,6 @@
 #include "io/VGADisplay.h"
 
 
-#define x86_ARCH
-
 class PrimaryInitialization
 {
     protected:

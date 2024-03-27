@@ -1,13 +1,24 @@
+#ifndef TYPES_H
+#define TYPES_H
+
+#include <arch>
+
+
 #define NULL 0
 
-
+#if defined(__IAPC)
 typedef unsigned char uint8;
 typedef unsigned short int uint16;
 typedef unsigned long uint32;
 typedef unsigned long long uint64;
 
 #if defined(__x86_64)
-    typedef uint64 memAddr;
+    typedef uint64 uintptr;
 #else
-    typedef uint32 memAddr;
+    typedef uint32 uintptr;
+#endif
+#else
+    #error IA-PC only support
+#endif
+
 #endif
