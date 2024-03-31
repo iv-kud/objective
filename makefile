@@ -2,9 +2,9 @@ CC = i686-elf-g++
 LD = ld
 ASM = nasm
 # test -O2 flag
-CFLAGS = -c -m32 -Wall -ffreestanding -nostdinc -nostdlib
+CFLAGS = -c -m32 -Wall -ffreestanding -nostdinc -nostdlib -fno-rtti
 AFLAGS = -f elf32
-LDFLAGS = -m elf_i386 $(patsubst %,-L%,$(subst :, ,$(LIBS_PATH))) -lgcc -lstdc++
+LDFLAGS = -m elf_i386 $(patsubst %,-L%,$(subst :, ,$(LIBS_PATH))) -lgcc
 QEMUFLAGS =
 
 CFILES = $(shell find ./ -type f \( -name \*.cpp -o -name \*.c \))
@@ -42,6 +42,7 @@ $(AFILES):
 
 startbuild:
 	@echo $(OBJ_FILES)
+	rm -rf $(BDIR)
 	mkdir $(BDIR)
 	@echo "Compile source files..."
 

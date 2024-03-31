@@ -2,6 +2,21 @@
 
 
 uint64 MngGdt::gdt[MngGdt::size];
+bool MngGdt::isInitialize = false;
+bool MngGdt::gdtLoaded = false;
+MngGdt mngGdt;
+
+MngGdt::MngGdt()
+{
+    if(!isInitialize)
+    {
+        MemoryOperations::set(gdt, 0, sizeof(uint64) * size);
+        currIdx = 1;
+        gdtLoaded = false;
+        isInitialize = true;
+        codeSegmentKern = NULL;
+    }
+};
 
 DescSeg32::DescSeg32(uint32 base, uint32 limit, uint8 access, uint8 flags)
 {
@@ -57,59 +72,48 @@ uint64 DescSeg32::flatDataUser()
                                     , PAGEGRAN | HIGHSIZE).getDescriptor();    
 };
 
-MngGdt::MngGdt()
-{
-    gdt[0] = 0;
-    currIdx = 1;
-    isGdtLoaded = 0;
-};
-
 bool MngGdt::addDescriptor(uint64 desc)
 {
-    if(currIdx >= size || currIdx == 0)
+    if(currIdx >= size or currIdx == 0 or gdtLoaded)
     {
         return false;
     }
 
+    if(desc == DescSeg32::flatCodeKernel()) codeSegmentKern = currIdx * 8;
     this->gdt[currIdx++] = desc;
     return true;
 };
 
 bool MngGdt::loadGdt()
 {
-    if(isGdtLoaded)
+    if(gdtLoaded)
     {
         return false;
     }
 
-    uint64 pointer = 0;
+    // Set pointer
+    uint64 descriptor = 0;
     uint16 size = sizeof(uint64) * this->size - 1;
-    uint32 offset = (uint32)((void *)(&gdt));
+    uint32 offset = (uint32)(&gdt);
 
-    pointer |= offset;
-    pointer <<= 16;
-    pointer |= size;
+    descriptor |= offset;
+    descriptor <<= 16;
+    descriptor |= size;
 
-    SWITCHTOGDT(pointer);
+    SWITCHTOGDT(descriptor);
 
-    isGdtLoaded = 1;
+    gdtLoaded = 1;
     return true;
 };
 
-bool MngGdt::getIsGdtLoaded()
+// Get static instance of MngGdt initialized once
+MngGdt &MngGdt::getInstance()
 {
-    return isGdtLoaded;
+    if(!isInitialize) mngGdt = MngGdt();
+    return mngGdt;
 };
 
-void MngGdt::operator=(const MngGdt& src)
+uint16 MngGdt::getCodeSegmentKernel()
 {
-    if(this->isGdtLoaded == 1 || src.isGdtLoaded == 1)
-    {
-        return;
-    }
-
-    // Fix it. Write method to copy from ... to ...
-    for(int i = 0; i < this->size; i++) this->gdt[i] = src.gdt[i];
-    this->isGdtLoaded = src.isGdtLoaded;
-    this->currIdx = src.currIdx;
+    return codeSegmentKern;
 };

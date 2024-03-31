@@ -2,6 +2,7 @@
 #define GDT_H
 
 #include <types.h>
+#include <MemoryOperations.h>
 
 
 // Define access options
@@ -59,7 +60,7 @@ class DescSeg32                     // Segment descriptor
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void SWITCHTOGDT(uint64 pointer);
+extern void SWITCHTOGDT(uint64 descriptor);
 #ifdef __cplusplus
 };
 #endif
@@ -67,17 +68,23 @@ extern void SWITCHTOGDT(uint64 pointer);
 class MngGdt
 {
     private:
-       const static uint8 size = 10;
-       static uint64 gdt[size]; 
-       uint8 currIdx;
-       bool isGdtLoaded;
+        const static uint8 size = 10;
+        static uint64 gdt[size]; 
+        static bool isInitialize;
+        static bool gdtLoaded;
+        uint16 codeSegmentKern;
+        uint8 currIdx;
+        MngGdt &operator=(const MngGdt &) = default;
 
     public:
-       MngGdt();
-       void operator=(const MngGdt& src);
-       bool addDescriptor(uint64 desc);  // 0 - not set descriptor, 1 - set
-       bool loadGdt();      // 0 - if GDT is not loaded, 1 - loaded
-       bool getIsGdtLoaded();
+        MngGdt();
+        MngGdt(const MngGdt &) = delete;
+        bool addDescriptor(uint64 desc);  // 0 - not set descriptor, 1 - set
+        bool loadGdt();      // 0 - if GDT is not loaded, 1 - loaded
+        uint16 getCodeSegmentKernel();
+        static MngGdt &getInstance();
 };
+
+extern MngGdt mngGdt;
 
 #endif

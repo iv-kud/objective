@@ -10,6 +10,7 @@ align 4
 
 section .bss
 align 16
+resb 160
 stack_bottom:
 resb 16384
 stack_top:
@@ -20,6 +21,7 @@ global _start:function (_start.end - _start)
 _start:
             mov esp, stack_top
             call main
+            int 0x20
             cli
 .hang:      hlt
             jmp .hang
