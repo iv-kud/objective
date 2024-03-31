@@ -1,4 +1,4 @@
-## Object Operating System
+## Objective Operating System
 
 ## Install dependencies
 
@@ -20,8 +20,8 @@ These variables may pass through *make* command `make *variables* *rule*`, or us
 
 #### Variables
 
-1. DEBUG. Takes a boolean value (true or false). Responsible for the debug version of the project to test it via GDB.
-2. LIBS_PATH. Takes the path to the required (gcc and stdc++) libraries.
+1. DEBUG. Not takes value. If defineв, the debug version of the project will be build, otherwise the release version. Responsible for the debug version of the project to test OS via GDB.
+2. LIBS_PATH. Takes the path to the required libraries. Now gcc library is required, supplied with the compiled.
 
 #### Ubuntu
 
@@ -32,7 +32,12 @@ make all
 
 Build and run debug version
 ```sh
-make DEBUG=true all
+make DEBUG=* all
+```
+or
+```sh
+export DEBUG=*
+make all
 ```
 
 ## Docs
@@ -41,7 +46,7 @@ make DEBUG=true all
 -   [The GNU GRUB manual][2]
 -   [Executable and linkable format ELF][3]
 -   [NASM documentation][4]
--   [Article where creating a simple OS][5]
+-   [Article about creatiing a simple OS][5]
 -   [Multiboot specification][6]
 -   [GCC compiler documentation][7]
 -   [Using NASM in a Hello World kernel][8]

@@ -14,7 +14,7 @@ SOURCE_FILES = $(CFILES) $(AFILES)
 OBJ_FILES = $(addprefix $(BDIR)/, $(addsuffix .o, $(basename $(SOURCE_FILES))))
 INCLUDE = ./include
 
-ifeq ($(DEBUG), true)
+ifdef DEBUG
 	CFLAGS := -g3 $(CFLAGS)
 	AFLAGS := -g $(AFLAGS)
 	QEMUFLAGS := -s -S $(QEMUFLAGS)
