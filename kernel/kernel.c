@@ -8,8 +8,8 @@ void main()
 {
     SecondaryInitialization init;
 
-    init.processorInitialize();
     init.devicesInitialize();
+    init.processorInitialize();
 
     out::display << "Hello, World!\n";
     Rsdp *rsdp = (Rsdp *)StringOperations::findInMemory(Rsdp::signatureString, 
@@ -29,6 +29,5 @@ void main()
                                madt->getIcs(7),
                                madt->getIcs(8)};
     const IoapicStruct *ioapicStruct = (IoapicStruct *)icsEntry[1];
-    out::display << '\n';
     empty();
 };
