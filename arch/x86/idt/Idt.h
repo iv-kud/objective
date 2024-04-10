@@ -32,6 +32,9 @@ class DescInterrupt32
         DescInterrupt32() = default;
         DescInterrupt32(const DescInterrupt32 &) = default; 
         DescInterrupt32(uint32 offset, uint16 selector, uint8 attr);
+        void setOffset(uint32 offset);
+        void setGateType(uint8 gateType);
+        void setDpl(uint8 dpl);
         uint64 getDescriptor();
         static DescInterrupt32 InterruptKernelLong(uint32 offset, 
                                                     uint16 selector);
@@ -43,6 +46,13 @@ class DescInterrupt32
 class MngIdt
 {
     private:
+        const static uint8 reservedIntSize = 12;
+        constexpr static uint8 reservedInts[reservedIntSize] = 
+        {
+            9, 15, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+        };
+        // If false interrupt number isn't reserved, true - reserved
+        bool isIntReserved(uint8 interrupt);
         const static uint8 size = 255;
         static uint64 idt[size];
         static bool isInitialize;

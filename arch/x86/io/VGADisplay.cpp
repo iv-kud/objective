@@ -137,3 +137,12 @@ bool VGADisplay::printChar(const char &c)
                    }
     }
 };
+
+void VGADisplay::clearScreen()
+{
+    xCurr = yCurr = 0;
+    videoMem = (dchar *)VGADisplayInfo::videoMemAddr;
+    uint16 maxPos = VGADisplayInfo::height * VGADisplayInfo::width * 2;
+
+    for(uint16 pos = 0; pos < maxPos; pos++) *this << ' ';
+};
