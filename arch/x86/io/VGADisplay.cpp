@@ -1,5 +1,4 @@
 #include "VGADisplay.h"
-#include "VGADisplayInfo.h"
 
 VGADisplay out::display;
 

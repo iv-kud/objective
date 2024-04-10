@@ -35,12 +35,10 @@ class VGADisplay
         void setColor(char colorAttr);
         void setBlink(bool blinkAttr);
         void setBright(bool brigthAttr);
-        // Rewrite
         void clearScreen();
 };
 
 // Global variables
-
 namespace out
 {
     extern VGADisplay display;
