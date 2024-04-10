@@ -21,7 +21,6 @@ global _start:function (_start.end - _start)
 _start:
             mov esp, stack_top
             call main
-            int 0x20
             cli
 .hang:      hlt
             jmp .hang

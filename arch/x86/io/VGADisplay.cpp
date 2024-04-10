@@ -1,4 +1,5 @@
 #include "VGADisplay.h"
+#include "VGADisplayInfo.h"
 
 VGADisplay out::display;
 
@@ -136,4 +137,13 @@ bool VGADisplay::printChar(const char &c)
                         return false;
                    }
     }
+};
+
+void VGADisplay::clearScreen()
+{
+    xCurr = yCurr = 0;
+    videoMem = (dchar *)VGADisplayInfo::videoMemAddr;
+    uint16 maxPos = VGADisplayInfo::height * VGADisplayInfo::width * 2;
+
+    for(uint16 pos = 0; pos < maxPos; pos++) *this << ' ';
 };

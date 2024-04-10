@@ -69,6 +69,15 @@ DescInterrupt32 DescInterrupt32::TaskKernel(uint16 selector)
                           );
 };
 
+bool MngIdt::isIntReserved(uint8 interrupt)
+{
+    for(uint8 indx = 0; indx < reservedIntSize; indx++)
+    {
+        if(reservedInts[indx] == interrupt) return true;
+    }
+    return false;
+};
+
 MngIdt::MngIdt()
 {
     if(!isInitialize)
@@ -88,9 +97,10 @@ bool MngIdt::canDescriptorWrite(uint8 idx)
 
 bool MngIdt::addDescriptor(DescInterrupt32 desc)
 {
-    if(!canDescriptorWrite(currIdx)) return false;
+    if(!canDescriptorWrite(currIdx) or isIntReserved(currIdx)) return false;
 
-    idt[currIdx++] = desc.getDescriptor();
+    idt[currIdx] = desc.getDescriptor();
+    while(isIntReserved(++currIdx));
     return true;
 };
 
@@ -108,7 +118,7 @@ bool MngIdt::loadIdt()
 
     //Set descriptor
     uint64 descriptor = 0;
-    uint16 size = sizeof(uint64) * size - 1;
+    uint16 size = sizeof(uint64) * this->size - 1;
     uint32 offset = (uint32)(&idt);
 
     descriptor |= offset;
@@ -127,4 +137,34 @@ MngIdt &MngIdt::getInstance()
 {
     if(!isInitialize) mngIdt = MngIdt();
     return mngIdt;
+};
+
+void DescInterrupt32::setOffset(uint32 offset)
+{
+    uint8 gateType = attributes & 0x0f;
+
+    if(!(gateType == TSK_GATE and offset != 0))
+    {
+        offsetLow = offset & 0xffff;
+        offsetHight = (offset & 0xffff0000) >> 16;
+    }
+};
+void DescInterrupt32::setGateType(uint8 gateType)
+{
+    if(gateType < TSK_GATE
+        or (gateType > TRAP_GATE_16 and gateType < INT_GATE_32)
+        or gateType > TRAP_GATE_32
+    ) return;
+    else if(gateType == TSK_GATE)
+    {
+        offsetLow = offsetHight = 0;
+    }
+
+    attributes &= 0xfff0;
+    attributes |= (gateType & 0x0f);
+};
+
+void DescInterrupt32::setDpl(uint8 dpl)
+{
+    attributes = (dpl & 0x03) << 5;
 };
