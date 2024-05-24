@@ -35,8 +35,9 @@ class DescInterrupt32
         void setOffset(uint32 offset);
         void setGateType(uint8 gateType);
         void setDpl(uint8 dpl);
-        uint64 getDescriptor();
-        static DescInterrupt32 InterruptKernelLong(uint32 offset, 
+        uint64 getDescriptor() const;
+        uint32 getOffset() const;
+        static DescInterrupt32 InterruptKernelLong(uint32 offset,
                                                     uint16 selector);
         static DescInterrupt32 TrapKernelLong(uint32 offset,
                                                     uint16 selector);
@@ -47,7 +48,7 @@ class MngIdt
 {
     private:
         const static uint8 reservedIntSize = 12;
-        constexpr static uint8 reservedInts[reservedIntSize] = 
+        constexpr static uint8 reservedInts[reservedIntSize] =
         {
             9, 15, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
         };
@@ -58,7 +59,12 @@ class MngIdt
         static bool isInitialize;
         static bool idtLoaded;
         uint8 currIdx;
+        // Start number of interrupts that service IRQ
+        // Accpet this number as first interrupt descriptor
+        // with dpl = 2 or 3 (drivers)
+        uint8 irqInterruptStart;
     public:
+        const static uint8 firstSystemIntNumber = 0x20;
         MngIdt();
         MngIdt(const MngIdt &) = delete;
         bool addDescriptor(DescInterrupt32 desc);
@@ -66,6 +72,8 @@ class MngIdt
         bool canDescriptorWrite(uint8 idx);
         bool loadIdt();
         static MngIdt &getInstance();
+        uint8 getIrqInterruptStart();
+        bool isInterruptSet(uint8 numberInterrupt);
 };
 
 extern MngIdt mngIdt;

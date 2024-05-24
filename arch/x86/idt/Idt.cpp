@@ -30,7 +30,7 @@ DescInterrupt32::DescInterrupt32(uint32 offset, uint16 selector, uint8 attr)
     }
 };
 
-uint64 DescInterrupt32::getDescriptor()
+uint64 DescInterrupt32::getDescriptor() const
 {
     uint64 desc = 0;
 
@@ -40,6 +40,11 @@ uint64 DescInterrupt32::getDescriptor()
     desc |= (uint64)offsetHight << 48;
 
     return desc;
+};
+
+uint32 DescInterrupt32::getOffset() const
+{
+    return offsetLow | offsetHight << 16;
 };
 
 DescInterrupt32 DescInterrupt32::InterruptKernelLong(uint32 offset, uint16 selector)
@@ -86,6 +91,7 @@ MngIdt::MngIdt()
         currIdx = NULL;
         idtLoaded = false;
         isInitialize = true;
+        irqInterruptStart = firstSystemIntNumber;
     }
 };
 
@@ -97,10 +103,24 @@ bool MngIdt::canDescriptorWrite(uint8 idx)
 
 bool MngIdt::addDescriptor(DescInterrupt32 desc)
 {
-    if(!canDescriptorWrite(currIdx) or isIntReserved(currIdx)) return false;
+    uint64 descqw = desc.getDescriptor();
 
-    idt[currIdx] = desc.getDescriptor();
+    if(!canDescriptorWrite(currIdx) or isIntReserved(currIdx)
+        or desc.getOffset() == NULL) return false;
+
+    idt[currIdx] = descqw;
+
+    uint8 attributes = descqw >> 40;
+
+    if((attributes & RING_DRIVERSH or
+       attributes & RING_DRIVERSL) and
+       (irqInterruptStart == firstSystemIntNumber))
+    {
+        irqInterruptStart = (uint8)(descqw >> 16);
+    }
+
     while(isIntReserved(++currIdx));
+
     return true;
 };
 
@@ -167,4 +187,14 @@ void DescInterrupt32::setGateType(uint8 gateType)
 void DescInterrupt32::setDpl(uint8 dpl)
 {
     attributes = (dpl & 0x03) << 5;
+};
+
+bool MngIdt::isInterruptSet(uint8 numberInterrupt)
+{
+    return idt[numberInterrupt];
+};
+
+uint8 MngIdt::getIrqInterruptStart()
+{
+    return irqInterruptStart;
 };
