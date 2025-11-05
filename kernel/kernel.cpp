@@ -5,7 +5,7 @@
 
 void empty() {};
 
-void main()
+int main()
 {
     SecondaryInitialization init;
 
@@ -16,4 +16,5 @@ void main()
 
     asm("sti");
     while(true);
+    return 0;
 };
