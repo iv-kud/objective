@@ -11,7 +11,6 @@ string(TOLOWER "${ARCH}" ARCH_LOWER)
 if(ARCH_LOWER STREQUAL "x86")
     set(TARGET_NAME "ObjectiveOS-X86")
     set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/arch/x86/toolchain-x86.cmake)
-    enable_language(ASM_NASM)
     message(STATUS "Building for x86 architecture")
 elseif(ARCH_LOWER STREQUAL "arm")
     #TODO: Add build for ARM arch
@@ -41,9 +40,42 @@ add_subdirectory(arch)
 add_subdirectory(drivers)
 
 if(ARCH_LOWER STREQUAL "x86")
+    enable_language(ASM_NASM)
     target_link_options(${TARGET_NAME} PRIVATE ${OS_LINKER_FLAGS})
     target_link_libraries(${TARGET_NAME} PRIVATE
         -L${LIBGCC_DIR}
         -lgcc
     )
 endif()
+
+if(BUILD_TYPE_UPPER STREQUAL "DEBUG")
+
+    add_custom_target(debug
+        COMMAND qemu-system-i386 -cdrom ${CMAKE_BINARY_DIR}/${TARGET_NAME}.iso -vga std -S -gdb tcp::1234
+        COMMENT "Starting QEMU in debug mode (GDB server: 1234)"
+        DEPENDS iso
+    )
+
+    add_custom_target(gdb
+        COMMAND gdb -ex "target remote :1234" -ex "break main" ${CMAKE_BINARY_DIR}/${TARGET_NAME}
+        COMMENT "Connecting GDB to QEMU"
+    )
+
+endif()
+
+add_custom_target(iso
+    DEPENDS ${TARGET_NAME}
+    COMMAND mkdir -p isodir/boot/grub
+    COMMAND cp ${TARGET_NAME} isodir/boot/${TARGET_NAME}
+    COMMAND cp ${CMAKE_SOURCE_DIR}/iso/boot/grub/grub.cfg isodir/boot/grub/
+    COMMAND grub-mkrescue -o ${TARGET_NAME}.iso isodir
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Creating ISO image"
+)
+
+add_custom_target(run
+    DEPENDS iso
+    COMMAND qemu-system-i386 -cdrom ${TARGET_NAME}.iso
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Starting QEMU"
+)
